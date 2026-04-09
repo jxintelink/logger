@@ -35,6 +35,7 @@ type Config struct {
 	Format     string // json 或 console
 	ShowLine   bool   // 是否显示行号
 	LogToStd   bool   // 是否同时输出到控制台
+	Colorize   bool   // 是否颜色化输出
 }
 
 // warnNoOutputOnce 在无输出目标时仅向 stderr 提示一次，避免误配后静默丢日志
@@ -55,7 +56,7 @@ func NewLogger(cfg Config) *Logger {
 
 	// 2. 获取编码器配置
 	// 如果输出到文件且格式是 JSON，强制不带颜色
-	encoder := newEncoder(cfg.Format)
+	encoder := newEncoder(cfg.Format, cfg.Colorize)
 
 	var cores []zapcore.Core
 
@@ -80,7 +81,7 @@ func NewLogger(cfg Config) *Logger {
 	// 4. 核心 2：控制台输出
 	if cfg.LogToStd {
 		// 控制台通常建议用 console 格式且带颜色
-		consoleEnc := newEncoder("console")
+		consoleEnc := newEncoder("console", cfg.Colorize)
 		cores = append(cores, zapcore.NewCore(consoleEnc, zapcore.Lock(os.Stdout), atomicLevel))
 	}
 
@@ -108,7 +109,7 @@ func NewLogger(cfg Config) *Logger {
 
 // --- 内部辅助函数 ---
 
-func newEncoder(format string) zapcore.Encoder {
+func newEncoder(format string, colorize bool) zapcore.Encoder {
 	// 通用配置
 	zec := zapcore.EncoderConfig{
 		TimeKey:        "time",
@@ -129,8 +130,11 @@ func newEncoder(format string) zapcore.Encoder {
 		return zapcore.NewJSONEncoder(zec)
 	}
 
-	// 默认为 console 格式，并开启颜色区分级别
-	zec.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	// 默认为 console 格式；是否带 ANSI 颜色由 colorize 控制
+	zec.EncodeLevel = zapcore.CapitalLevelEncoder
+	if colorize {
+		zec.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	}
 	return zapcore.NewConsoleEncoder(zec)
 }
 
