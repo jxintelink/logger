@@ -167,6 +167,10 @@ func (l *Logger) SetLevel(level string) {
 	l.atomicLevel.SetLevel(parseLogLevel(level))
 }
 
+func (l *Logger) SetColorize(colorize bool) {
+
+}
+
 func (l *Logger) AtomicLevel() zap.AtomicLevel {
 	return l.atomicLevel
 }
