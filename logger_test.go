@@ -10,7 +10,7 @@ func TestInitLogger(t *testing.T) {
 	// 测试完成后清理文件
 	defer os.RemoveAll("./test_logs")
 
-	cfg := Config{
+	cfg := LoggerConfig{
 		Filename:   logPath,
 		MaxSize:    1,
 		MaxBackups: 3,

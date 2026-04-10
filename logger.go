@@ -25,21 +25,21 @@ type Logger struct {
 }
 
 // Config 结构体，用于初始化参数（参数多时建议用结构体，方便后期扩展）
-type Config struct {
-	Filename   string // 日志文件路径
-	MaxSize    int    // MB
-	MaxBackups int
-	MaxAge     int
-	Compress   bool
-	Level      string // debug, info, warn, error...
-	Format     string // json 或 console
-	ShowLine   bool   // 是否显示行号
-	LogToStd   bool   // 是否同时输出到控制台
-	Colorize   bool   // 是否颜色化输出
+type LoggerConfig struct {
+	Filename   string `yaml:"Filename"` // 日志文件路径
+	MaxSize    int    `yaml:"MaxSize"`  // MB
+	MaxBackups int    `yaml:"MaxBackups"`
+	MaxAge     int    `yaml:"MaxAge"`
+	Compress   bool   `yaml:"Compress"`
+	Level      string `yaml:"Level"`    // debug, info, warn, error...
+	Format     string `yaml:"Format"`   // json 或 console
+	ShowLine   bool   `yaml:"ShowLine"` // 是否显示行号
+	LogToStd   bool   `yaml:"LogToStd"` // 是否同时输出到控制台
+	Colorize   bool   `yaml:"Colorize"` // 是否颜色化输出
 }
 
-func NewConfig(filename string, maxSize int, maxBackups int, maxAge int, compress bool, level string, format string, showLine bool, logToStd bool, colorize bool) *Config {
-	return &Config{
+func NewConfig(filename string, maxSize int, maxBackups int, maxAge int, compress bool, level string, format string, showLine bool, logToStd bool, colorize bool) *LoggerConfig {
+	return &LoggerConfig{
 		Filename:   filename,
 		MaxSize:    maxSize,
 		MaxBackups: maxBackups,
@@ -57,7 +57,7 @@ func NewConfig(filename string, maxSize int, maxBackups int, maxAge int, compres
 var warnNoOutputOnce sync.Once
 
 // InitLogger 初始化全局日志单例（进程内建议只调用一次，否则会覆盖全局 L/S 与 zap 全局 logger）
-func InitLogger(cfg *Config) {
+func InitLogger(cfg *LoggerConfig) {
 	L = NewLogger(cfg)
 	S = L.Sugar()
 	// 替换 zap 的全局 logger
@@ -65,7 +65,7 @@ func InitLogger(cfg *Config) {
 }
 
 // NewLogger 创建一个新的 Logger 实例
-func NewLogger(cfg *Config) *Logger {
+func NewLogger(cfg *LoggerConfig) *Logger {
 	// 1. 设置动态日志级别
 	atomicLevel := zap.NewAtomicLevelAt(parseLogLevel(cfg.Level))
 
