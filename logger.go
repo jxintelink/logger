@@ -38,11 +38,26 @@ type Config struct {
 	Colorize   bool   // 是否颜色化输出
 }
 
+func NewConfig(filename string, maxSize int, maxBackups int, maxAge int, compress bool, level string, format string, showLine bool, logToStd bool, colorize bool) *Config {
+	return &Config{
+		Filename:   filename,
+		MaxSize:    maxSize,
+		MaxBackups: maxBackups,
+		MaxAge:     maxAge,
+		Compress:   compress,
+		Level:      level,
+		Format:     format,
+		ShowLine:   showLine,
+		LogToStd:   logToStd,
+		Colorize:   colorize,
+	}
+}
+
 // warnNoOutputOnce 在无输出目标时仅向 stderr 提示一次，避免误配后静默丢日志
 var warnNoOutputOnce sync.Once
 
 // InitLogger 初始化全局日志单例（进程内建议只调用一次，否则会覆盖全局 L/S 与 zap 全局 logger）
-func InitLogger(cfg Config) {
+func InitLogger(cfg *Config) {
 	L = NewLogger(cfg)
 	S = L.Sugar()
 	// 替换 zap 的全局 logger
@@ -50,7 +65,7 @@ func InitLogger(cfg Config) {
 }
 
 // NewLogger 创建一个新的 Logger 实例
-func NewLogger(cfg Config) *Logger {
+func NewLogger(cfg *Config) *Logger {
 	// 1. 设置动态日志级别
 	atomicLevel := zap.NewAtomicLevelAt(parseLogLevel(cfg.Level))
 

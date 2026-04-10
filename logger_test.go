@@ -23,7 +23,7 @@ func TestInitLogger(t *testing.T) {
 	}
 
 	// 1. 测试初始化
-	InitLogger(cfg)
+	InitLogger(&cfg)
 	if L == nil || S == nil {
 		t.Fatal("Logger 初始化失败，全局变量为 nil")
 	}
