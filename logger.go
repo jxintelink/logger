@@ -38,19 +38,8 @@ type LoggerConfig struct {
 	Colorize   bool   `yaml:"Colorize"` // 是否颜色化输出
 }
 
-func NewConfig(filename string, maxSize int, maxBackups int, maxAge int, compress bool, level string, format string, showLine bool, logToStd bool, colorize bool) *LoggerConfig {
-	return &LoggerConfig{
-		Filename:   filename,
-		MaxSize:    maxSize,
-		MaxBackups: maxBackups,
-		MaxAge:     maxAge,
-		Compress:   compress,
-		Level:      level,
-		Format:     format,
-		ShowLine:   showLine,
-		LogToStd:   logToStd,
-		Colorize:   colorize,
-	}
+func NewConfig() *LoggerConfig {
+	return &LoggerConfig{}
 }
 
 // warnNoOutputOnce 在无输出目标时仅向 stderr 提示一次，避免误配后静默丢日志
