@@ -1,4 +1,4 @@
-module logger
+module github.com/jxintelink/logger
 
 go 1.25.10
 
