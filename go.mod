@@ -1,9 +1,9 @@
-module github.com/jxintelink/logger
+module logger
 
-go 1.25.9
+go 1.25.10
 
 require (
-	go.uber.org/zap v1.27.1
+	go.uber.org/zap v1.28.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
